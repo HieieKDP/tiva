@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>TIVA: Runtime temporal integrity for perception-driven robots</title>
+  <meta name="description" content="TIVA evaluates temporal trust before inference and before actuation in perception-driven robots.">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+  <main class="content">
+    <h1>TIVA</h1>
+    <p class="tagline">Runtime temporal integrity for perception-driven robots.</p>
+    <p class="contact"><strong>Prithvi Bhat</strong> · <a href="mailto:prithvibhat19@gmail.com">prithvibhat19@gmail.com</a></p>
+
+    <h2>The problem</h2>
+    <p>Under peak load, perception lags while health checks stay green. Motion continues. Logs look fine. Failures show up as wrong picks, near misses, or days lost on intermittent floor issues.</p>
+
+    <h2>What TIVA does</h2>
+    <p>TIVA evaluates temporal trust at the perception→action boundary: whether an observation should enter inference, and whether published output should reach planners and actuators. Perception models remain unchanged; no retraining required.</p>
+    <p><strong>Today:</strong> temporal observations (JSONL traces), offline KPI analysis, and governed vs ungoverned replay on recorded workloads. Live integration (ROS 2 wrapper, C++ sidecar) is on the roadmap.</p>
+
+    <h2>Where it applies</h2>
+    <ul>
+      <li><strong>Warehouse AMRs:</strong> docking, obstacles, congestion under load</li>
+      <li><strong>Industrial arms:</strong> stale picks when vision lags</li>
+      <li><strong>Drones:</strong> late detections under compute contention</li>
+    </ul>
+
+    <h2>How it fits</h2>
+    <p>Two checks: <strong>before inference</strong> (admit or skip) and <strong>before actuation</strong> (forward, hold, or withhold). Timing health is derived from the temporal contract in runtime traces.</p>
+    <figure class="diagram">
+      <img src="assets/diagrams/tiva-gates.svg" width="720" height="172" alt="Sensors, gate before inference, inference, gate before actuation, planner, and actuators. TIVA temporal governance spans both gates.">
+      <figcaption>TIVA governs before inference and before actuation; perception models and planners stay unchanged.</figcaption>
+    </figure>
+    <ul>
+      <li><strong>Observations:</strong> canonical temporal contract in runtime traces (capture → infer → emit)</li>
+      <li><strong>KPI:</strong> offline analysis of age-of-information, latency, and emit cadence on those traces</li>
+      <li><strong>Replay:</strong> recorded video and JSONL workloads; governed vs ungoverned output in demo replays</li>
+    </ul>
+
+    <h2>Why not timestamps, QoS, or watchdogs alone?</h2>
+    <table>
+      <thead>
+        <tr><th>Existing approach</th><th>Limitation</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Timestamp threshold</td><td>Detects age but provides no runtime governance</td></tr>
+        <tr><td>Dropping frames</td><td>Reduces backlog but does not govern published outputs</td></tr>
+        <tr><td>ROS 2 QoS</td><td>Manages communication quality, not temporal validity for actuation</td></tr>
+        <tr><td>Watchdogs</td><td>Detect failures after they occur; do not govern degraded operation</td></tr>
+      </tbody>
+    </table>
+    <p>Unlike timestamps or QoS alone, TIVA targets arbitration <strong>before inference and before actuation</strong>, not only message delivery.</p>
+
+    <h2>Validation</h2>
+    <p>Lab and replay demonstrations on recorded workloads, not field deployments. Replay shows skip-infer and hold-publish behavior under artificial stress.</p>
+    <ul>
+      <li><strong>Replay:</strong> same YOLO stream, governed vs ungoverned under stress</li>
+      <li><strong>Conveyor:</strong> synthetic pick loop; hold when positions go stale</li>
+      <li><strong>Pi lab:</strong> queue policy and freshness at inference under overload</li>
+    </ul>
+
+    <video src="assets/videos/conveyor_20s.mp4" controls autoplay muted loop playsinline></video>
+    <video src="assets/videos/replay_comparison_35s.mp4" controls playsinline></video>
+
+    <h2>Design partners</h2>
+    <p>We are speaking with teams that see timing-related perception failures under load. Short calls to understand the workload; structured evaluations after the current research phase, by mutual agreement. Not an immediate integration pilot.</p>
+    <p><strong>Discuss your use case:</strong> <a href="mailto:prithvibhat19@gmail.com">prithvibhat19@gmail.com</a> · Team of three (embedded, ML, data)</p>
+  </main>
+</body>
+</html>

@@ -1,0 +1,134 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>TIVA — Temporal Integrity and Validation Architecture</title>
+  <meta name="description" content="TIVA: execution governance for perception-driven Physical AI under constrained compute.">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+  <main class="content">
+    <h1>TIVA</h1>
+    <p class="acronym">Temporal Integrity and Validation Architecture</p>
+    <p class="tagline">Execution governance for Physical AI under constrained compute.</p>
+    <p class="contact"><strong>Prithvi Bhat</strong> · <a href="mailto:prithvibhat19@gmail.com">prithvibhat19@gmail.com</a></p>
+
+    <h2>Executive summary</h2>
+    <p>Physical AI systems do not fail only when models are wrong. They fail when <strong>limited compute, competing tasks, and deadlines</strong> force the stack to keep acting on <strong>outdated perception</strong> while health checks still look nominal.</p>
+    <p>For teams deploying robots and autonomous systems on constrained edge hardware, TIVA asks a direct question: <strong>is this output still trustworthy to act on, right now, under load?</strong></p>
+    <p>TIVA is not another inference framework. It is <strong>temporal execution governance</strong> at the perception→action boundary: what may enter inference, and what may influence motion, with <strong>auditable traces</strong> as the substrate.</p>
+    <p><strong>Today (Stage 1):</strong> one perception→action loop; temporal observations (JSONL), offline KPI, governed vs ungoverned replay under stress.<br>
+    <strong>Direction (Stages 2–4):</strong> multi-stream, criticality-aware governance on shared edge compute, toward a predictive execution layer for Physical AI.</p>
+
+    <h2>The constraint: Physical AI is not one model</h2>
+    <p>Most AI stacks assume abundant compute and optimize individual models. Deployed robots face a different problem:</p>
+    <ul>
+      <li>Multiple cameras and sensors</li>
+      <li>Planning, localization, mapping</li>
+      <li>Safety monitoring and human interaction</li>
+      <li>Often <strong>one GPU/NPU/CPU budget</strong> on the edge</li>
+    </ul>
+    <p>The challenge is allocating finite compute so the system maximizes mission success while respecting safety constraints, especially when overloaded.</p>
+    <p>Under contention, the failure mode is often <strong>freshness</strong>: perception falls behind reality, but motion continues. The system appears healthy by traditional metrics, yet acts on stale state.</p>
+
+    <h2>The execution governor</h2>
+    <p>The layer we are building toward answers system-level questions, not model-level ones:</p>
+    <ul>
+      <li>Which model or stream should run next?</li>
+      <li>Which inference can be delayed or skipped?</li>
+      <li>Which perception task must not miss its effective deadline?</li>
+      <li>When should a lower-fidelity path be used?</li>
+      <li>How should compute be redistributed after a fault or spike?</li>
+      <li>What happens when the system is overloaded, gracefully, not catastrophically?</li>
+    </ul>
+    <p>This is <strong>runtime governance</strong>, not a single scheduler knob: an execution layer Physical AI stacks could depend on, not a point solution for one workload.</p>
+
+    <h2>TIVA wedge today (Stage 1)</h2>
+    <table>
+      <thead>
+        <tr><th>Checkpoint</th><th>Question</th><th>Policy</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Before inference</td><td>Should this observation enter inference?</td><td>Admit / skip</td></tr>
+        <tr><td>Before actuation</td><td>Should this output drive planners and actuators?</td><td>Forward / hold / withhold</td></tr>
+      </tbody>
+    </table>
+    <figure class="diagram">
+      <img src="assets/diagrams/tiva-gates.svg" width="720" height="172" alt="Sensors, gate before inference, inference, gate before actuation, planner, and actuators. TIVA temporal governance spans both gates.">
+      <figcaption>TIVA governs before inference and before actuation; perception models and planners stay unchanged.</figcaption>
+    </figure>
+    <p>Perception models are unchanged. No retraining. TIVA sits beside existing models and controllers.</p>
+    <p><strong>Substrate:</strong> a temporal observation contract in runtime traces (capture → infer → emit) and offline KPI (age-of-information, inference delay, emit cadence). Governance decisions are tied to replayable evidence, not opaque tuning.</p>
+
+    <h2>Evolution roadmap</h2>
+    <table>
+      <thead>
+        <tr><th>Stage</th><th>Scope</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>1</strong></td><td>One pipeline; deadline- and freshness-aware governance; traces + KPI</td><td><strong>Current focus</strong></td></tr>
+        <tr><td><strong>2</strong></td><td>Multiple inference streams; shared GPU/NPU; criticality-aware execution</td><td>Design-partner input</td></tr>
+        <tr><td><strong>3</strong></td><td>Fleet-wide governance; compute allocation across edge devices</td><td>Long-term research</td></tr>
+        <tr><td><strong>4</strong></td><td>Predictive governor; proactive reconfiguration under anticipated overload</td><td>Long-term research</td></tr>
+      </tbody>
+    </table>
+    <p>Reactive today: classify temporal stress and govern accept/skip/hold from traces. Predictive reallocation is research direction, not shipped product. Stage 1: lab and replay evidence; not a certified safety product or production fleet deployment.</p>
+
+    <h2>Why this category now</h2>
+    <p>Physical AI is moving from demos to always-on deployment. The gap is increasingly <strong>execution and deployment</strong>, not model capability alone:</p>
+    <ul>
+      <li>The last mile between training/simulation and reliable field operation</li>
+      <li>A missing execution layer once agents and robots run continuously at scale</li>
+      <li>Timing and freshness failures that surface only after a robot misbehaves under load</li>
+    </ul>
+    <p>TIVA targets that layer: <strong>criticality-aware execution governance under constrained compute</strong>, with observability built in from Stage 1.</p>
+
+    <h2>Differentiation</h2>
+    <table>
+      <thead>
+        <tr><th>Approach</th><th>What it optimizes</th><th>Gap under overload</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Faster inference</td><td>Throughput</td><td>Stale output can still drive motion</td></tr>
+        <tr><td>Timestamps / QoS</td><td>Age or delivery</td><td>No actuation policy</td></tr>
+        <tr><td>Watchdogs</td><td>Process liveness</td><td>Silent staleness while healthy</td></tr>
+        <tr><td><strong>TIVA</strong></td><td><strong>Trust at decision time</strong></td><td>Govern before infer and before actuation; audit trail</td></tr>
+      </tbody>
+    </table>
+    <p>Positioning: execution governance for Physical AI, not another foundation model or robot SKU.</p>
+
+    <h2>Evidence targets</h2>
+    <table>
+      <thead>
+        <tr><th>Capability</th><th>Stage 1 evidence</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Behavior under overload</td><td>KPI on traces; governed vs ungoverned replay</td></tr>
+        <tr><td>Graceful degradation</td><td>Hold / skip vs forwarding stale output</td></tr>
+        <tr><td>Observability</td><td>JSONL contract + KPI; replayable decisions</td></tr>
+        <tr><td>Criticality prioritization</td><td>Stage 2, partner-defined workloads</td></tr>
+        <tr><td>Heterogeneous hardware</td><td>Pi lab today; partner silicon on roadmap</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Demonstrations</h2>
+    <p>Lab and replay on recorded workloads, not field deployments.</p>
+    <ul>
+      <li><strong>Replay:</strong> same YOLO stream, governed vs ungoverned under artificial stress</li>
+      <li><strong>Conveyor:</strong> synthetic pick loop; hold when published state goes stale</li>
+      <li><strong>Pi lab:</strong> queue policy vs freshness at inference under overload</li>
+    </ul>
+
+    <video src="assets/videos/conveyor_20s.mp4" controls autoplay muted loop playsinline></video>
+    <video src="assets/videos/replay_comparison_35s.mp4" controls playsinline></video>
+
+    <h2>Team and engage</h2>
+    <p><strong>Prithvi Bhat</strong> leads research and outreach: temporal contract, edge runtime, governance demonstrations.</p>
+    <p>Team of three: embedded systems, machine learning, data science, collaborating on early prototypes and demos.</p>
+    <p>We welcome a <strong>30-minute conversation</strong> on category, Stage 1 wedge, and path to Stage 2. Design-partner evaluations on recorded workloads are planned by mutual agreement after the current research phase.</p>
+    <p><strong>Contact:</strong> <a href="mailto:prithvibhat19@gmail.com">prithvibhat19@gmail.com</a></p>
+  </main>
+</body>
+</html>

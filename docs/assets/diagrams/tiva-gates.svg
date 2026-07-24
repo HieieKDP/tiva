@@ -1,0 +1,53 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 172" role="img" aria-labelledby="tiva-gates-title tiva-gates-desc">
+  <title id="tiva-gates-title">TIVA two-gate integration</title>
+  <desc id="tiva-gates-desc">Sensors feed a before-inference gate, inference, a before-actuation gate, planner, and actuators. TIVA temporal governance spans both gates.</desc>
+  <defs>
+    <marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+      <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+    </marker>
+    <style>
+      .box { fill: #f6f8fa; stroke: #c8d0d8; stroke-width: 1.25; }
+      .gate { fill: #eef6ff; stroke: #0969da; stroke-width: 1.5; }
+      .label { font: 600 12px system-ui, -apple-system, Segoe UI, Roboto, sans-serif; fill: #1a1a1a; }
+      .sublabel { font: 400 10px system-ui, -apple-system, Segoe UI, Roboto, sans-serif; fill: #444; }
+      .bracket { fill: none; stroke: #0969da; stroke-width: 1.25; stroke-dasharray: 5 4; }
+      .bracket-label { font: 600 11px system-ui, -apple-system, Segoe UI, Roboto, sans-serif; fill: #0969da; }
+      .arrow { fill: none; stroke: #666; stroke-width: 1.25; marker-end: url(#arrow); }
+    </style>
+  </defs>
+
+  <!-- pipeline boxes -->
+  <rect class="box" x="8" y="54" width="68" height="36" rx="6"/>
+  <text class="label" x="42" y="76" text-anchor="middle">Sensors</text>
+
+  <rect class="gate" x="104" y="44" width="108" height="56" rx="6"/>
+  <text class="label" x="158" y="64" text-anchor="middle">Gate 1</text>
+  <text class="sublabel" x="158" y="78" text-anchor="middle">before inference</text>
+  <text class="sublabel" x="158" y="90" text-anchor="middle">admit / skip</text>
+
+  <rect class="box" x="240" y="54" width="88" height="36" rx="6"/>
+  <text class="label" x="284" y="70" text-anchor="middle">Inference</text>
+  <text class="sublabel" x="284" y="82" text-anchor="middle">unchanged</text>
+
+  <rect class="gate" x="356" y="44" width="108" height="56" rx="6"/>
+  <text class="label" x="410" y="64" text-anchor="middle">Gate 2</text>
+  <text class="sublabel" x="410" y="78" text-anchor="middle">before actuation</text>
+  <text class="sublabel" x="410" y="90" text-anchor="middle">forward / hold</text>
+
+  <rect class="box" x="492" y="54" width="68" height="36" rx="6"/>
+  <text class="label" x="526" y="76" text-anchor="middle">Planner</text>
+
+  <rect class="box" x="584" y="54" width="80" height="36" rx="6"/>
+  <text class="label" x="624" y="76" text-anchor="middle">Actuators</text>
+
+  <!-- arrows -->
+  <path class="arrow" d="M76 72 H104"/>
+  <path class="arrow" d="M212 72 H240"/>
+  <path class="arrow" d="M328 72 H356"/>
+  <path class="arrow" d="M464 72 H492"/>
+  <path class="arrow" d="M560 72 H584"/>
+
+  <!-- governance bracket -->
+  <path class="bracket" d="M98 108 V124 H466 V108"/>
+  <text class="bracket-label" x="360" y="154" text-anchor="middle">TIVA temporal governance (capture ù infer ù emit)</text>
+</svg>
