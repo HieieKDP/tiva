@@ -1,0 +1,236 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <script type="module" src="https://static.cloudflareinsights.com/beacon.min.js" data-cf-beacon='{"token": "62fd45e558dd4d1ab7195c3abc549db3"}'></script>
+  <title>Erstiva · TIVA — Temporal execution governance for Physical AI</title>
+  <meta name="description" content="TIVA (Temporal Integrity and Validation Architecture): execution governance at the perception→action boundary. AI sees at T₀; the robot acts at T₁.">
+  <link rel="stylesheet" href="assets/css/site.css">
+</head>
+<body>
+  <main class="content">
+    <p class="brand-erstiva">Erstiva</p>
+
+    <h2 class="section-first">What is TIVA</h2>
+    <p class="what-is-tiva"><strong>TIVA</strong> (Temporal Integrity and Validation Architecture) is temporal execution governance for Physical AI under constrained compute. AI sees the world at T<sub>0</sub>; the robot acts at T<sub>1</sub>. TIVA determines whether that observation is still valid at actuation time.</p>
+
+    <h2>Demo</h2>
+    <p class="demo-lead">Controlled lab replays on recorded workloads. Mechanism proof, not field ROI or safety certification.</p>
+
+    <figure class="video-block">
+      <video src="assets/videos/conveyor_20s.mp4" controls autoplay muted loop playsinline></video>
+      <figcaption>Conveyor: acting on a stale position (left) vs hold until output is temporally valid (right). Controlled synthetic demo.</figcaption>
+    </figure>
+
+    <figure class="video-block">
+      <video src="assets/videos/replay_comparison_35s.mp4" controls playsinline preload="metadata"></video>
+      <figcaption>Replay: ungoverned (left) vs governed with TIVA (right). Split-screen may show an earlier internal label on the right panel; same governance behavior. Recorded video.</figcaption>
+    </figure>
+
+    <p class="contact"><strong>Prithvi Bhat</strong> · Independent researcher · pre-incorporation<br>
+    <a href="mailto:prithvi.bhat@erstiva.com">prithvi.bhat@erstiva.com</a></p>
+
+    <h2>Joining on close</h2>
+    <ul>
+      <li>Embedded software, AUTOSAR, ~19 years automotive (Bosch, ETAS class)</li>
+      <li>Data and validation, ~7 years automotive ML, IIT Madras</li>
+    </ul>
+
+    <h2>Executive summary</h2>
+    <p>Physical AI systems do not fail only when models are wrong. They fail when <strong>limited compute, competing tasks, and deadlines</strong> force the stack to keep acting on <strong>outdated perception</strong> while health checks still look nominal.</p>
+    <p><strong>TIVA</strong> is <strong>temporal execution governance</strong> at the perception→action boundary: what may enter inference, and what may influence motion, with <strong>auditable traces</strong> as the substrate. On constrained edge hardware, that means knowing whether perception remains <strong>temporally valid for actuation, right now, under load</strong>, not only whether the model ran.</p>
+    <p>TIVA is <strong>not another inference framework.</strong> It governs execution timing and publishability when compute contention and deadlines collide.</p>
+    <p><strong>Stage 1 today:</strong> live temporal <strong>observation</strong> and <strong>validation</strong> on edge traces; two-gate governance <strong>proven in governed replay</strong> (demos above). <strong>Next:</strong> the same contract on the live hot path. <strong>Stages 2 to 4:</strong> multi-stream, criticality-aware governance on shared edge compute, toward a predictive execution layer for Physical AI.</p>
+
+    <h2>The constraint: Physical AI is not one model</h2>
+    <p>Most AI stacks assume abundant compute and optimize individual models. Deployed robots face a different problem:</p>
+    <ul>
+      <li>Multiple cameras and sensors</li>
+      <li>Planning, localization, mapping</li>
+      <li>Safety monitoring and human interaction</li>
+      <li>Often <strong>one GPU/NPU/CPU budget</strong> on the edge</li>
+    </ul>
+    <p>The challenge is allocating finite compute so the system maximizes mission success while respecting safety constraints, especially when overloaded.</p>
+    <p>Under contention, the failure mode is often <strong>freshness</strong>: perception falls behind reality, but motion continues. The system appears healthy by traditional metrics, yet acts on stale state.</p>
+
+    <h2>Target architecture</h2>
+    <p>The full layer is an <strong>execution governor</strong> for Physical AI under constrained compute: criticality-aware scheduling across competing streams and tasks (Stages 2 to 4 below). It answers system-level questions, not model-level ones:</p>
+    <ul>
+      <li>Which model or stream should run next?</li>
+      <li>Which inference can be delayed or skipped?</li>
+      <li>Which perception task must not miss its effective deadline?</li>
+      <li>When should a lower-fidelity path be used?</li>
+      <li>How should compute be redistributed after a fault or spike?</li>
+      <li>What happens when the system is overloaded, gracefully, not catastrophically?</li>
+    </ul>
+    <p>This is <strong>runtime governance</strong>, not a single scheduler knob: an execution layer Physical AI stacks could depend on, not a point solution for one workload.</p>
+    <figure class="diagram">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 108" role="img" aria-label="TIVA scope expansion from Stage 1 single stream to Stages 2 through 4 multi-stream fleet predictive governor">
+        <defs>
+          <marker id="scope-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+          </marker>
+        </defs>
+        <rect x="8" y="20" width="156" height="52" rx="6" fill="#eef6ff" stroke="#0969da" stroke-width="1.5"/>
+        <text x="86" y="42" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Stage 1</text>
+        <text x="86" y="58" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#444">one stream, two gates</text>
+        <rect x="188" y="20" width="156" height="52" rx="6" fill="#f6f8fa" stroke="#c8d0d8" stroke-width="1.25"/>
+        <text x="266" y="42" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Stage 2</text>
+        <text x="266" y="58" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#444">multi-stream, shared GPU</text>
+        <rect x="368" y="20" width="156" height="52" rx="6" fill="#f6f8fa" stroke="#c8d0d8" stroke-width="1.25"/>
+        <text x="446" y="42" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Stage 3</text>
+        <text x="446" y="58" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#444">fleet-wide allocation</text>
+        <rect x="548" y="20" width="164" height="52" rx="6" fill="#f6f8fa" stroke="#c8d0d8" stroke-width="1.25"/>
+        <text x="630" y="42" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#1a1a1a">Stage 4</text>
+        <text x="630" y="58" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#444">predictive governor</text>
+        <path d="M164 46 H188" fill="none" stroke="#666" stroke-width="1.25" marker-end="url(#scope-arrow)"/>
+        <path d="M344 46 H368" fill="none" stroke="#666" stroke-width="1.25" marker-end="url(#scope-arrow)"/>
+        <path d="M524 46 H548" fill="none" stroke="#666" stroke-width="1.25" marker-end="url(#scope-arrow)"/>
+      </svg>
+      <figcaption>Target scope expansion. Stage 1 (highlighted): live observability today; gate policies proven in replay. Stages 2–4 are design-partner and research direction.</figcaption>
+    </figure>
+
+    <h2>Stage 1 wedge</h2>
+    <p>The narrow integration model: <strong>two governance checkpoints</strong> on a single perception stream (capture → infer → emit), with auditable traces. Perception models stay unchanged. The same gate semantics extend as the governor takes on multi-stream scope.</p>
+    <table>
+      <thead>
+        <tr><th>Checkpoint</th><th>Question</th><th>Policy</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Before inference</td><td>Should this observation enter inference?</td><td>Admit / skip</td></tr>
+        <tr><td>Before actuation</td><td>Should this output drive planners and actuators?</td><td>Forward / hold / withhold</td></tr>
+      </tbody>
+    </table>
+    <figure class="diagram">
+      <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 720 172" role="img" aria-label="TIVA two-gate integration: sensors, gate before inference, inference, gate before actuation, planner, actuators">
+        <defs>
+          <marker id="tiva-arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto">
+            <path d="M0,0 L8,4 L0,8 Z" fill="#666"/>
+          </marker>
+        </defs>
+        <rect x="8" y="54" width="68" height="36" rx="6" fill="#f6f8fa" stroke="#c8d0d8" stroke-width="1.25"/>
+        <text x="42" y="76" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#1a1a1a">Sensors</text>
+        <rect x="104" y="44" width="108" height="56" rx="6" fill="#eef6ff" stroke="#0969da" stroke-width="1.5"/>
+        <text x="158" y="64" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#1a1a1a">Gate 1</text>
+        <text x="158" y="78" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#444">before inference</text>
+        <text x="158" y="90" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#444">admit / skip</text>
+        <rect x="240" y="54" width="88" height="36" rx="6" fill="#f6f8fa" stroke="#c8d0d8" stroke-width="1.25"/>
+        <text x="284" y="70" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#1a1a1a">Inference</text>
+        <text x="284" y="82" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#444">unchanged</text>
+        <rect x="356" y="44" width="108" height="56" rx="6" fill="#eef6ff" stroke="#0969da" stroke-width="1.5"/>
+        <text x="410" y="64" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#1a1a1a">Gate 2</text>
+        <text x="410" y="78" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#444">before actuation</text>
+        <text x="410" y="90" text-anchor="middle" font-family="system-ui,sans-serif" font-size="10" fill="#444">forward / hold</text>
+        <rect x="492" y="54" width="68" height="36" rx="6" fill="#f6f8fa" stroke="#c8d0d8" stroke-width="1.25"/>
+        <text x="526" y="76" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#1a1a1a">Planner</text>
+        <rect x="584" y="54" width="80" height="36" rx="6" fill="#f6f8fa" stroke="#c8d0d8" stroke-width="1.25"/>
+        <text x="624" y="76" text-anchor="middle" font-family="system-ui,sans-serif" font-size="12" font-weight="600" fill="#1a1a1a">Actuators</text>
+        <path d="M76 72 H104" fill="none" stroke="#666" stroke-width="1.25" marker-end="url(#tiva-arrow)"/>
+        <path d="M212 72 H240" fill="none" stroke="#666" stroke-width="1.25" marker-end="url(#tiva-arrow)"/>
+        <path d="M328 72 H356" fill="none" stroke="#666" stroke-width="1.25" marker-end="url(#tiva-arrow)"/>
+        <path d="M464 72 H492" fill="none" stroke="#666" stroke-width="1.25" marker-end="url(#tiva-arrow)"/>
+        <path d="M560 72 H584" fill="none" stroke="#666" stroke-width="1.25" marker-end="url(#tiva-arrow)"/>
+        <path d="M98 108 V124 H466 V108" fill="none" stroke="#0969da" stroke-width="1.25" stroke-dasharray="5 4"/>
+        <text x="360" y="154" text-anchor="middle" font-family="system-ui,sans-serif" font-size="11" font-weight="600" fill="#0969da">TIVA temporal governance (capture &#8594; infer &#8594; emit)</text>
+      </svg>
+      <figcaption>Stage 1 integration target: two gates on capture → infer → emit.</figcaption>
+    </figure>
+
+    <h2>Stage 1 today</h2>
+    <table>
+      <thead>
+        <tr><th>Layer</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Temporal observation contract (JSONL)</td><td><strong>Live</strong> on Pi edge and sim workloads</td></tr>
+        <tr><td>KPI and classification</td><td><strong>Validation pipeline</strong> on canonical traces</td></tr>
+        <tr><td>Two-gate governance</td><td><strong>Proven in replay</strong> (videos above)</td></tr>
+        <tr><td>Edge ingress (Pi)</td><td><strong>Live</strong> skip-to-latest frame ingress + per-frame timing logs (not full two-gate governor on hot path)</td></tr>
+        <tr><td>Edge / ROS governor</td><td><strong>Next:</strong> C++ sidecar, wrapper</td></tr>
+        <tr><td>Sim reference governor (Python)</td><td><strong>Reference implementation</strong>; calibration refinement ongoing</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Observability and runtime policy</h2>
+    <p>Stage 1 delivers two layers on the same contract:</p>
+    <table>
+      <thead>
+        <tr><th>Layer</th><th>What it gives you</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Observability</strong></td><td>See timing degradation in audit traces while dashboards still look healthy</td><td><strong>Live</strong></td></tr>
+        <tr><td><strong>Runtime policy</strong></td><td>Decide what may still drive motion: proceed, wait on last valid output, or skip work that would not be safe to act on</td><td><strong>Proven in replay</strong>; live deployment <strong>next</strong></td></tr>
+      </tbody>
+    </table>
+
+    <h2>What changes in practice</h2>
+    <ul>
+      <li><strong>Stale outputs do not propagate.</strong> Under identical stress in our demos, governance prevents stale perception from driving downstream action.</li>
+      <li><strong>Problems become visible before the floor does.</strong> Timing failure shows up in traces while health checks stay green.</li>
+      <li><strong>Less wasted effort when validity is gone.</strong> Skip inference and publication that would not be safe to act on anyway.</li>
+    </ul>
+    <table>
+      <thead>
+        <tr><th>What teams care about</th><th>Without governance</th><th>With TIVA (replay-proven today)</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Decisions under stress</strong></td><td>Act on an old sensor picture</td><td>Wait or withhold until output is temporally valid</td></tr>
+        <tr><td><strong>Visibility</strong></td><td>Intermittent failures, unclear logs</td><td>Auditable record of timing and policy each cycle</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Why this category now</h2>
+    <p>Physical AI is moving from demos to always-on deployment. Industry context (third-party estimates; not TIVA performance claims):</p>
+    <table>
+      <thead>
+        <tr><th>Theme</th><th>Industry context</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>Timing gap</strong></td><td>Deployed robot stacks often see <strong>tens to hundreds of milliseconds</strong> between sensing and actuation; acting on stale state is a documented failure mode (observation–execution gap).</td></tr>
+        <tr><td><strong>Cost of failure</strong></td><td>Unplanned warehouse and industrial downtime is widely cited at <strong>roughly $10K–$100K+ per hour</strong> in throughput impact, depending on facility scale (often higher once labor and SLA penalties are included).</td></tr>
+        <tr><td><strong>Market tailwind</strong></td><td>Physical AI robotics and edge inference for robots are forecast in the <strong>tens of billions of dollars</strong> this decade as fleets move to 24/7 operation (analyst definitions and figures vary).</td></tr>
+      </tbody>
+    </table>
+    <p class="note">Sources (external): <a href="https://arxiv.org/abs/2602.14255">industrial observation–execution gap (research)</a>; <a href="https://peaklogix.com/what-happens-when-your-warehouse-system-goes-down-and-how-to-make-sure-it-doesnt/">warehouse downtime cost commentary</a>; market sizing from industry analyst reports (e.g. Physical AI / edge robotics; estimates vary). TIVA does not claim customer ROI.</p>
+
+    <h2>Evolution roadmap</h2>
+    <table>
+      <thead>
+        <tr><th>Stage</th><th>Scope</th><th>Status</th></tr>
+      </thead>
+      <tbody>
+        <tr><td><strong>1a</strong></td><td>Observation contract, KPI/classification, Pi edge traces</td><td><strong>Live</strong></td></tr>
+        <tr><td><strong>1b</strong></td><td>Two-gate governance on single perception stream</td><td><strong>Replay-proven</strong></td></tr>
+        <tr><td><strong>1c</strong></td><td>Live edge / ROS governor on hot path</td><td><strong>Next</strong></td></tr>
+        <tr><td><strong>2</strong></td><td>Multiple inference streams; shared GPU/NPU; criticality-aware execution</td><td>Design-partner input</td></tr>
+        <tr><td><strong>3</strong></td><td>Fleet-wide governance; compute allocation across edge devices</td><td>Long-term research</td></tr>
+        <tr><td><strong>4</strong></td><td>Predictive governor; proactive reconfiguration under anticipated overload</td><td>Long-term research</td></tr>
+      </tbody>
+    </table>
+
+    <h2>Differentiation</h2>
+    <table>
+      <thead>
+        <tr><th>Approach</th><th>What it optimizes</th><th>Gap under overload</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>Faster inference</td><td>Throughput</td><td>Stale output can still drive motion</td></tr>
+        <tr><td>Timestamps / QoS</td><td>Age or delivery</td><td>No actuation policy</td></tr>
+        <tr><td>Watchdogs</td><td>Process liveness</td><td>Silent staleness while healthy</td></tr>
+        <tr><td><strong>TIVA</strong></td><td><strong>Validity at decision time</strong></td><td>Govern before infer and before actuation; audit trail</td></tr>
+      </tbody>
+    </table>
+    <p>Positioning: execution governance for Physical AI, not another foundation model or robot SKU.</p>
+
+    <h2>For robotics teams</h2>
+    <p>We are looking to speak with teams that have encountered timing-related perception failures under load. Short technical calls to understand the workload; recorded-trace evaluations later by mutual agreement. No hot-path install required to start.</p>
+
+    <h2>Get in touch</h2>
+    <p>If useful, a <strong>20-minute</strong> walkthrough of the demos above, or send per-frame timestamps from a loaded perception run for a temporal validity report.</p>
+    <p><a href="mailto:prithvi.bhat@erstiva.com">prithvi.bhat@erstiva.com</a></p>
+
+    <p class="note">Research software · early stage · pre-incorporation</p>
+  </main>
+</body>
+</html>
